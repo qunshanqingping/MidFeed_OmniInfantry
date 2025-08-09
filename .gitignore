@@ -1,0 +1,15 @@
+/MDK-ARM/GOM8010/
+**/cmake-build-debug/** 
+**/.DS_Store
+
+# Ignore build files
+*.d
+*.o
+*.u
+*.hex
+*.axf
+*.crf
+*.elf
+*.bin
+# Ignore Large Files
+*.exe 
