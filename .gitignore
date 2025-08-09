@@ -1,4 +1,4 @@
-/MDK-ARM/GOM8010/
+# Ignore CMake files
 **/cmake-build-debug/** 
 **/.DS_Store
 

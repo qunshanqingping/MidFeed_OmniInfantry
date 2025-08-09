@@ -48,11 +48,43 @@ else ()
     add_compile_options(-Og -g)
 endif ()
 
-include_directories(${includes})
+include_directories(${includes}
+Middlewares/Third_Party/SEGGER/RTT
+Middlewares/Third_Party/SEGGER/Config
+User/bsp/usart
+User/bsp/log
+User/sys/basic/math
+User/bsp/typedef
+User/bsp/dwt
+User/bsp/spi
+User/modules/typedef
+User/modules/remote_control/dbus
+User/modules/remote_control/ibus
+User/modules/remote_control/sbus
+User/app/task
+User/app/init
+User/app/remote_ctrl
+)
 
 add_definitions(${defines})
 
-file(GLOB_RECURSE SOURCES ${sources})
+file(GLOB_RECURSE SOURCES ${sources}
+
+"Middlewares/Third_Party/SEGGER/Config*.*"
+"Middlewares/Third_Party/SEGGER/RTT*.*"
+"User/bsp/dwt/*.*"
+"User/bsp/usart/*.*"
+"User/bsp/log/*.*"
+"User/sys/basic/math"
+"User/bsp/typedef"
+"User/modules/typedef/*.*"
+"User/modules/remote_control/dbus/*.*"
+"User/modules/remote_control/ibus/*.*"
+"User/modules/remote_control/sbus/*.*"
+"User/app/task/*.*"
+"User/app/init/*.*"
+
+)
 
 set(LINKER_SCRIPT $${CMAKE_SOURCE_DIR}/${linkerScript})
 

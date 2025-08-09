@@ -49,11 +49,43 @@ else ()
     add_compile_options(-Og -g)
 endif ()
 
-include_directories(Core/Inc USB_DEVICE/App USB_DEVICE/Target Drivers/STM32H7xx_HAL_Driver/Inc Drivers/STM32H7xx_HAL_Driver/Inc/Legacy Middlewares/Third_Party/FreeRTOS/Source/include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F Middlewares/ST/STM32_USB_Device_Library/Core/Inc Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc Drivers/CMSIS/Device/ST/STM32H7xx/Include Drivers/CMSIS/Include)
+include_directories(Core/Inc USB_DEVICE/App USB_DEVICE/Target Drivers/STM32H7xx_HAL_Driver/Inc Drivers/STM32H7xx_HAL_Driver/Inc/Legacy Middlewares/Third_Party/FreeRTOS/Source/include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F Middlewares/ST/STM32_USB_Device_Library/Core/Inc Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc Drivers/CMSIS/Device/ST/STM32H7xx/Include Drivers/CMSIS/Include
+Middlewares/Third_Party/SEGGER/RTT
+Middlewares/Third_Party/SEGGER/Config
+User/bsp/usart
+User/bsp/log
+User/sys/basic/math
+User/bsp/typedef
+User/bsp/dwt
+User/bsp/spi
+User/modules/typedef
+User/modules/remote_control/dbus
+User/modules/remote_control/ibus
+User/modules/remote_control/sbus
+User/app/task
+User/app/init
+User/app/remote_ctrl
+)
 
 add_definitions(-DDEBUG -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx)
 
-file(GLOB_RECURSE SOURCES "Core/*.*" "Middlewares/*.*" "USB_DEVICE/*.*" "Drivers/*.*")
+file(GLOB_RECURSE SOURCES "Core/*.*" "Middlewares/*.*" "USB_DEVICE/*.*" "Drivers/*.*"
+
+"Middlewares/Third_Party/SEGGER/Config*.*"
+"Middlewares/Third_Party/SEGGER/RTT*.*"
+"User/bsp/dwt/*.*"
+"User/bsp/usart/*.*"
+"User/bsp/log/*.*"
+"User/sys/basic/math"
+"User/bsp/typedef"
+"User/modules/typedef/*.*"
+"User/modules/remote_control/dbus/*.*"
+"User/modules/remote_control/ibus/*.*"
+"User/modules/remote_control/sbus/*.*"
+"User/app/task/*.*"
+"User/app/init/*.*"
+
+)
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32H723VGTX_FLASH.ld)
 
