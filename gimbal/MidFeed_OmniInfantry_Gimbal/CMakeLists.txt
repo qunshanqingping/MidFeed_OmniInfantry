@@ -76,6 +76,7 @@ file(GLOB_RECURSE SOURCES "Core/*.*" "Middlewares/*.*" "USB_DEVICE/*.*" "Drivers
 "User/bsp/dwt/*.*"
 "User/bsp/usart/*.*"
 "User/bsp/log/*.*"
+"User/bsp/spi/*.*"
 "User/sys/basic/math"
 "User/bsp/typedef"
 "User/modules/typedef/*.*"

@@ -57,7 +57,6 @@ void Remote_Ctrl_Dbus_Decode(volatile const uint8_t *dbus_buf, RemoteCtrlInfo_s 
     remote_ctrl_data->rc.wheel -= DT7_CH_MEDIAN;
 }
 
-
 /*!
  * @brief DBUS module UART receive complete callback function
  * @param[in] parent_pointer Pointer to DbusInstance_s structure (passed as user data)
@@ -82,10 +81,10 @@ void Dbus_RxCallback(void* parent_pointer, uint16_t size)
         ((DMA_Stream_TypeDef  *)uart_handle_type_def->hdmarx->Instance)->CR |= DMA_SxCR_CT;
 
         /* Reset DMA reception counter for next transfer */
-        __HAL_DMA_SET_COUNTER(uart_handle_type_def->hdmarx, 36);
+        __HAL_DMA_SET_COUNTER(uart_handle_type_def->hdmarx, dbus_instance->uart_instance->rx_len * 2);
 
         /* Validate received data size before processing */
-        if(size == 18)
+        if(size == dbus_instance->uart_instance->rx_len)
         {
             /* Decode data from Memory 0 buffer */
             Remote_Ctrl_Dbus_Decode(dbus_instance->uart_instance->rx_first_buff, &dbus_instance->remote_ctrl_data);
@@ -101,10 +100,10 @@ void Dbus_RxCallback(void* parent_pointer, uint16_t size)
         ((DMA_Stream_TypeDef  *)uart_handle_type_def->hdmarx->Instance)->CR &= ~(DMA_SxCR_CT);
 
         /* Reset DMA reception counter for next transfer */
-        __HAL_DMA_SET_COUNTER(uart_handle_type_def->hdmarx, 36);
+        __HAL_DMA_SET_COUNTER(uart_handle_type_def->hdmarx, dbus_instance->uart_instance->rx_len * 2);
 
         /* Validate received data size before processing */
-        if(size == 18)
+        if(size == dbus_instance->uart_instance->rx_len)
         {
             /* Decode data from Memory 1 buffer */
             Remote_Ctrl_Dbus_Decode(dbus_instance->uart_instance->rx_second_buff, &dbus_instance->remote_ctrl_data);
