@@ -17,7 +17,7 @@
 #include "bsp_log.h"
 
 #include "dbus.h"
-
+#include "bsp_spi.h"
 DbusInstance_s* dbus_instance;
 static DbusInstance_s* Dbus_Init(void);
 
