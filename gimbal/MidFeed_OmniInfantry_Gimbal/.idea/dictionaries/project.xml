@@ -2,8 +2,11 @@
   <dictionary name="project">
     <words>
       <w>cplt</w>
+      <w>fdcan</w>
       <w>hdma</w>
       <w>hspi</w>
+      <w>huart</w>
+      <w>logwarning</w>
       <w>usart</w>
     </words>
   </dictionary>
