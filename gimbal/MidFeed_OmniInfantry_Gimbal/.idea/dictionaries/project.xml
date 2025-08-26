@@ -1,12 +1,18 @@
 <component name="ProjectDictionaryState">
   <dictionary name="project">
     <words>
+      <w>cordic</w>
       <w>cplt</w>
+      <w>cyccnt</w>
+      <w>dcmi</w>
       <w>fdcan</w>
+      <w>fmac</w>
       <w>hdma</w>
+      <w>hfdcan</w>
       <w>hspi</w>
       <w>huart</w>
       <w>logwarning</w>
+      <w>otfdec</w>
       <w>usart</w>
     </words>
   </dictionary>

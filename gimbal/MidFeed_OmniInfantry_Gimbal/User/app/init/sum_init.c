@@ -28,7 +28,7 @@ static DbusInstance_s* Dbus_Init(void);
 static void Bsp_Init(void)
 {
     /* Initialize the BSP */
-    dwt_init(480);
+    Dwt_Init();
     log_init();
 }
 
