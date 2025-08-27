@@ -58,6 +58,7 @@ User/sys/basic/math
 User/bsp/typedef
 User/bsp/dwt
 User/bsp/spi
+User/bsp/can
 User/modules/typedef
 User/modules/remote_control/dbus
 User/modules/remote_control/ibus
@@ -65,6 +66,7 @@ User/modules/remote_control/sbus
 User/app/task
 User/app/init
 User/app/remote_ctrl
+USer/app
 )
 
 add_definitions(-DDEBUG -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx)
@@ -77,6 +79,7 @@ file(GLOB_RECURSE SOURCES "Core/*.*" "Middlewares/*.*" "USB_DEVICE/*.*" "Drivers
 "User/bsp/usart/*.*"
 "User/bsp/log/*.*"
 "User/bsp/spi/*.*"
+"User/bsp/can/*.*"
 "User/sys/basic/math"
 "User/bsp/typedef"
 "User/modules/typedef/*.*"
@@ -85,7 +88,7 @@ file(GLOB_RECURSE SOURCES "Core/*.*" "Middlewares/*.*" "USB_DEVICE/*.*" "Drivers
 "User/modules/remote_control/sbus/*.*"
 "User/app/task/*.*"
 "User/app/init/*.*"
-
+"USer/app/*.*"
 )
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32H723VGTX_FLASH.ld)

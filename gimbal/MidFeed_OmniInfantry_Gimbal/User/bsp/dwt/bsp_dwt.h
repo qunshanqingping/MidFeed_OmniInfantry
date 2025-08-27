@@ -2,12 +2,12 @@
 * @file bsp_dwt.c
  * @brief 更精确的延时函数和系统时间功能实现
  * @author Adonis Jin
- * @date 25-7-27
+ * @date 2025-7-27
  * @version 1.0
- * @date 25-8-26
- * @version 1.1  规范命名
- *               修改Dwt_Init函数，无需传入频率参数
- *               修改延时函数，不使用float进行时间计算
+ * @note  实现基本功能
+ * @date 2025-8-26
+ * @version 1.1
+ * @note 规范命名；修改Dwt_Init函数，无需传入频率参数；修改延时函数，不使用float进行时间计算
  */
 #ifndef __BSP_DWT_H
 #define __BSP_DWT_H
@@ -92,6 +92,6 @@ void Dwt_Delay_Ms(const uint16_t delay_time);
  * @note 使用DWT计数器实现精确延时，单位为微秒，范围为1-65535微秒
  * @param delay_time 延时时间，单位为微秒
  */
-void Dwt_Delay_Us(const uint32_t delay_time);
+void Dwt_Delay_Us(const uint16_t delay_time);
 
 #endif /* __BSP_DWT_H */

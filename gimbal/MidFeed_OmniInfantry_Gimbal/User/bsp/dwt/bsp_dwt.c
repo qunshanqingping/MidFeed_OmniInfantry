@@ -2,16 +2,19 @@
  * @file bsp_dwt.c
  * @brief 更精确的延时函数和系统时间功能实现
  * @author Adonis Jin
- * @date 25-7-27
+ * @date 2025-7-27
  * @version 1.0
- * @date 25-8-26
- * @version 1.1  规范命名
- *               修改Dwt_Init函数，无需传入频率参数
- *               修改延时函数，不使用float进行时间计算
+ * @note  实现基本功能
+ * @date 2025-8-26
+ * @version 1.1
+ * @note 规范命名；修改Dwt_Init函数，无需传入频率参数；修改延时函数，不使用float进行时间计算
  */
 #include "bsp_dwt.h"
 #include "cmsis_os.h"
 #include "main.h"
+
+/* 私有变量 ---------------------------------------------------------*/
+
 /**
  * @brief 系统时间相关变量
  * @param sys_time : 用于存储系统当前时间的结构体，包含秒(s)、毫秒(ms)和微秒(us)三个成员
@@ -37,6 +40,8 @@ static uint32_t cyclist_overflow_count, cyclist_last;
  */
 static uint64_t cyclist64;
 
+/* 私有函数 ---------------------------------------------------------*/
+
 /**
  * @brief 更新DWT计数器值
  * @note 该函数用于更新CYCLIST计数器的状态，检测计数器是否溢出，
@@ -61,6 +66,8 @@ static void Dwt_Cnt_Update(void)
         bit_blocker = 0;
     }
 }
+
+/* 公有函数 ---------------------------------------------------------*/
 
 /**
  * @brief 初始化DWT（Data Watchpoint and Trace）模块
@@ -97,9 +104,9 @@ float Get_Time_Delta(uint32_t *cnt_last)
     const volatile uint32_t cnt_now = DWT->CYCCNT;
     // 处理溢出情况
     uint32_t delta = cnt_now - *cnt_last;
-    if (delta > (UINT32_MAX / 2))
+    if (delta > UINT32_MAX / 2)
     {
-        delta = (UINT32_MAX - *cnt_last) + cnt_now;
+        delta = UINT32_MAX - *cnt_last + cnt_now;
     }
     // 计算时间差，单位为秒
     const float dt = (float)delta / (float)cpu_freq_hz_s;
@@ -118,7 +125,7 @@ float Get_Time_Delta(uint32_t *cnt_last)
 double Get_Time_Delta64(uint32_t *cnt_last)
 {
     const volatile uint32_t cnt_now = DWT->CYCCNT;
-    const double dt = ((uint32_t)(cnt_now-*cnt_last))/((double)(cpu_freq_hz_s));
+    const double dt = (cnt_now-*cnt_last)/(double)cpu_freq_hz_s;
     *cnt_last = cnt_now;
     Dwt_Cnt_Update();
     return dt;
@@ -191,7 +198,7 @@ void Dwt_Delay_S(const uint8_t delay_time)
 {
     const uint32_t tick_start = DWT->CYCCNT;
     const uint8_t wait_time = delay_time;
-    while ((DWT->CYCCNT - tick_start) < wait_time * cpu_freq_hz_s);
+    while (DWT->CYCCNT - tick_start < wait_time * cpu_freq_hz_s);
 }
 
 /**
@@ -203,7 +210,7 @@ void Dwt_Delay_Ms(const uint16_t delay_time)
 {
     const uint32_t tick_start = DWT->CYCCNT;
     const uint16_t wait_time = delay_time ;
-    while ((DWT->CYCCNT - tick_start) < wait_time * cpu_freq_hz_ms);
+    while (DWT->CYCCNT - tick_start < wait_time * cpu_freq_hz_ms);
 }
 
 /**
@@ -211,9 +218,9 @@ void Dwt_Delay_Ms(const uint16_t delay_time)
  * @note 使用DWT计数器实现精确延时，单位为微秒，范围为1-65535微秒
  * @param delay_time 延时时间，单位为微秒
  */
-void Dwt_Delay_Us(const uint32_t delay_time)
+void Dwt_Delay_Us(const uint16_t delay_time)
 {
     const uint32_t tick_start = DWT->CYCCNT;
     const uint16_t wait_time = delay_time ;
-    while ((DWT->CYCCNT - tick_start) < wait_time * cpu_freq_hz_us);
+    while (DWT->CYCCNT - tick_start < wait_time * cpu_freq_hz_us);
 }

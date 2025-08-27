@@ -29,7 +29,7 @@ static void Bsp_Init(void)
 {
     /* Initialize the BSP */
     Dwt_Init();
-    log_init();
+    Log_Init();
 }
 
 /**
@@ -39,7 +39,7 @@ static void Bsp_Init(void)
 static void Module_Init(void) {
     dbus_instance = Dbus_Init();
     if (dbus_instance == NULL) {
-        LOGERROR("DBUS initialization failed");
+        Log_Error("DBUS initialization failed");
     }
 }
 
@@ -83,7 +83,7 @@ static DbusInstance_s* Dbus_Init(void)
     DbusConfig_s *dbus_config = (DbusConfig_s *)user_malloc(sizeof(DbusConfig_s));
     if (dbus_config == NULL)
     {
-        LOGERROR("DBUS config allocation failed");
+        Log_Error("DBUS config allocation failed");
         return NULL;
     }
     memset(dbus_config, 0, sizeof(DbusConfig_s));
@@ -96,7 +96,7 @@ static DbusInstance_s* Dbus_Init(void)
     DbusInstance_s *dbus_instance = (DbusInstance_s*)user_malloc(sizeof(DbusInstance_s));
     if (dbus_instance == NULL)
     {
-        LOGERROR("DBUS instance registration failed");
+        Log_Error("DBUS instance registration failed");
         user_free(dbus_config);
         return NULL;
     }
