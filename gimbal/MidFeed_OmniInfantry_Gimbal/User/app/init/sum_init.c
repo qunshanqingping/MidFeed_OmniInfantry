@@ -15,12 +15,12 @@
 
 #include "bsp_dwt.h"
 #include "bsp_log.h"
-
+#include "bsp_fdcan.h"
 #include "dbus.h"
-#include "bsp_spi.h"
+#include "cmsis_os.h"
 DbusInstance_s* dbus_instance;
 static DbusInstance_s* Dbus_Init(void);
-
+static void test_can(void);
 /**
  * @brief Initializes the Board Support Package (BSP)
  * @todo repair the log initialization function
@@ -41,6 +41,7 @@ static void Module_Init(void) {
     if (dbus_instance == NULL) {
         Log_Error("DBUS initialization failed");
     }
+    test_can();
 }
 
 /**
@@ -106,3 +107,36 @@ static DbusInstance_s* Dbus_Init(void)
     return dbus_instance;
 }
 
+CanInstance_s *test;
+CanInitConfig_s test_config = {
+    .can_handle = &hfdcan1,
+    .tx_id = 0x200,
+    .rx_id = 0x1FF,
+    .can_module_callback = NULL,
+    .id = NULL
+};
+
+static void test_can(void)
+{
+    test = Can_Register(&test_config);
+    if (test == NULL)
+    {
+        Log_Error("CAN Register Failed");
+    }
+    else
+    {
+        Log_Passing("CAN Register Success");
+    }
+}
+
+void CAN_Task(void const * argument)
+{
+    /* USER CODE BEGIN CAN_Task */
+    /* Infinite loop */
+    for(;;)
+    {
+        Can_Transmit(test);
+        osDelay(200);
+    }
+    /* USER CODE END CAN_Task */
+}
