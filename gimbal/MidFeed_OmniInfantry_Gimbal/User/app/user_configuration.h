@@ -10,6 +10,12 @@
 #ifndef USER_CONFIGURATION_H
 #define USER_CONFIGURATION_H
 
+#include "stdbool.h"
+/* 调试模式 */
+#define DEBUG_MODE
+
+bool User_Debug_handle(void);
+
 /* CAN 初始化配置选项 */
 
 // 选择 CAN 类型

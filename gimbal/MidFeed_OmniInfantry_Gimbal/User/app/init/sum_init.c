@@ -114,7 +114,7 @@ CanInitConfig_s test_config = {
     .tx_id = 0x200,
     .rx_id = 0x1FF,
     .can_module_callback = NULL,
-    .id = NULL
+    .parent_pointer = NULL
 };
 
 static void test_can(void)

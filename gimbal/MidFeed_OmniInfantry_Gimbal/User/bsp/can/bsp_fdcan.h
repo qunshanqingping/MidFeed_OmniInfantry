@@ -26,7 +26,7 @@ typedef struct _CanInstance_s
     uint8_t rx_buff[8];                                   // 接收缓存, 最大消息长度为 8
     uint8_t rx_len;                                       // 接收长度, 可能为 0-8
     void (*can_module_callback)(struct _CanInstance_s *); // 接收的回调函数, 用于解析接收到的数据
-    void *id;                                             // 使用 can 外设的模块指针 (即 id 指向的模块拥有此 can 实例, 是父子关系)
+    void *parent_pointer;                                             // 使用 can 外设的模块指针 (即 id 指向的模块拥有此 can 实例, 是父子关系)
 }CanInstance_s;
 
 typedef struct
@@ -36,7 +36,7 @@ typedef struct
     uint16_t tx_id;
     uint16_t rx_id;
     void (*can_module_callback)(struct _CanInstance_s *);
-    void *id;
+    void *parent_pointer;
 }CanInitConfig_s;
 CanInstance_s* Can_Register(const CanInitConfig_s* config);
 HAL_StatusTypeDef Can_Transmit(const CanInstance_s *instance);
