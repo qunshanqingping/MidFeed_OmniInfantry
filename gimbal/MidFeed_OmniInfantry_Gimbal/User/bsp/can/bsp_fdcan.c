@@ -57,9 +57,16 @@ static bool Can_Filter_Init(void) {
     FDCAN1_FilterConfig.FilterID1 = 0x00000000;                 // 过滤器 ID1，只要 ID2 配置为 0x00000000，就不会过滤任何 ID
     FDCAN1_FilterConfig.FilterID2 = 0x00000000;                 // 过滤器 ID2
 
-    HAL_FDCAN_ConfigFilter(&hfdcan1, &FDCAN1_FilterConfig); // 将上述配置应用到 FDCAN1
-    HAL_FDCAN_ConfigGlobalFilter(&hfdcan1, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE);
-    HAL_FDCAN_ConfigFifoWatermark(&hfdcan1, USER_FDCAN1_FIFO_NUMBER, 0);
+    if (HAL_FDCAN_ConfigFilter(&hfdcan1, &FDCAN1_FilterConfig) != HAL_OK){
+        return false;
+    } // 将上述配置应用到 FDCAN1
+    if (HAL_FDCAN_ConfigGlobalFilter(&hfdcan1, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE) != HAL_OK)
+    {
+        return false;
+    }
+    if (HAL_FDCAN_ConfigFifoWatermark(&hfdcan1, USER_FDCAN1_FIFO_NUMBER, 0) != HAL_OK){
+        return false;
+    }
 #endif
     // FDCAN2 过滤器配置
 #ifdef USER_CAN2
@@ -67,7 +74,7 @@ static bool Can_Filter_Init(void) {
     static uint32_t USER_FDCAN2_FrameFormat;
     // 判断 ID 类型
     if (hfdcan2.Init.FrameFormat == FDCAN_FRAME_CLASSIC){
-        USER_FDCAN2_FrameFormat = FDCAN_STANDARD_ID;         // 使用经典 CAN，只有标准 ID
+        USER_FDCAN2_FrameFormat = FDCAN_STANDARD_ID;         // 使用标准 ID
     }else{
         USER_FDCAN2_FrameFormat = FDCAN_EXTENDED_ID;         // 使用扩展 ID
     }
@@ -86,9 +93,15 @@ static bool Can_Filter_Init(void) {
     FDCAN2_FilterConfig.FilterID1 = 0x00000000;                 // 过滤器 ID1，只要 ID2 配置为 0x00000000，就不会过滤任何 ID
     FDCAN2_FilterConfig.FilterID2 = 0x00000000;                 // 过滤器 ID2
 
-    HAL_FDCAN_ConfigFilter(&hfdcan2, &FDCAN2_FilterConfig); // 将上述配置应用到 FDCAN2
-    HAL_FDCAN_ConfigGlobalFilter(&hfdcan2, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE);
-    HAL_FDCAN_ConfigFifoWatermark(&hfdcan2, USER_FDCAN2_FIFO_NUMBER, 0);
+    if (HAL_FDCAN_ConfigFilter(&hfdcan2, &FDCAN2_FilterConfig) != HAL_OK){
+        return false;
+    } // 将上述配置应用到 FDCAN2
+    if (HAL_FDCAN_ConfigGlobalFilter(&hfdcan2, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE) != HAL_OK){
+        return false;
+    }
+    if (HAL_FDCAN_ConfigFifoWatermark(&hfdcan2, USER_FDCAN2_FIFO_NUMBER, 0) != HAL_OK){
+        return false;
+    }
 #endif
     // FDCAN3 过滤器配置
 #ifdef USER_CAN3
@@ -114,15 +127,17 @@ static bool Can_Filter_Init(void) {
     FDCAN3_FilterConfig.FilterConfig = USER_FDCAN3_FIFO_NUMBER;
     FDCAN3_FilterConfig.FilterID1 = 0x00000000;                // 过滤器 ID1，只要 ID2 配置为 0x00000000
     FDCAN3_FilterConfig.FilterID2 = 0x00000000;                // 过滤器 ID2
-    HAL_FDCAN_ConfigFilter(&hfdcan3, &FDCAN3_FilterConfig); // 将上述配置应用到 FDCAN3
-    HAL_FDCAN_ConfigGlobalFilter(&hfdcan3, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE);
-    HAL_FDCAN_ConfigFifoWatermark(&hfdcan3, USER_FDCAN3_FIFO_NUMBER, 0);
+    if (HAL_FDCAN_ConfigFilter(&hfdcan3, &FDCAN3_FilterConfig) != HAL_OK){
+        return false;
+    } // 将上述配置应用到 FDCAN3
+    if (HAL_FDCAN_ConfigGlobalFilter(&hfdcan3, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE) != HAL_OK){
+        return false;
+    }
+    if (HAL_FDCAN_ConfigFifoWatermark(&hfdcan3, USER_FDCAN3_FIFO_NUMBER, 0) != HAL_OK){
+        return false;
+    }
 #endif
-#if !defined(USER_CAN1) && !defined(USER_CAN2) && !defined(USER_CAN3)
-    return false; // 如果没有定义任何 CAN，就返回错误
-#else
     return true;
-#endif
 }
 
 
@@ -131,14 +146,48 @@ static bool Can_Filter_Init(void) {
  * @brief CAN 使能函数
  * @return true-- 初始化成功   false-- 初始化失败
  * @date 2025-08-27
+ * @todo 还要修
  */
+
+uint8_t cnt_test = 0 ;
 static bool Can_Service_Init(void){
-    HAL_FDCAN_Start(&hfdcan1);                               //¿ªÆôFDCAN
-    HAL_FDCAN_Start(&hfdcan2);
-    HAL_FDCAN_Start(&hfdcan3);
-    HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0);
-    HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0);
-    HAL_FDCAN_ActivateNotification(&hfdcan3, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0);
+#ifdef USER_CAN1
+    if (HAL_FDCAN_Start(&hfdcan1) != HAL_OK){
+        Log_Error("FDCAN1 Starts Failed");
+    }
+#endif
+#ifdef USER_CAN2
+    if (HAL_FDCAN_Start(&hfdcan2) != HAL_OK){
+        Log_Error("FDCAN2 Starts Failed");
+        return false;
+    }
+#endif
+#ifdef USER_CAN3
+    if (HAL_FDCAN_Start(&hfdcan3) != HAL_OK){
+        Log_Error("FDCAN3 Starts Failed");
+        return false;
+    }
+#endif
+#ifdef USER_CAN1
+    if (HAL_FDCAN_ActivateNotification(&hfdcan1,FDCAN_IT_RX_FIFO0_NEW_MESSAGE,0) != HAL_OK)
+    {
+        return false;
+    }
+#endif
+#ifdef USER_CAN2
+    Dwt_Delay_Ms(2);
+    if (HAL_FDCAN_ActivateNotification(&hfdcan2,FDCAN_IT_RX_FIFO0_NEW_MESSAGE,0) != HAL_OK)
+    {
+        return false;
+    }
+#endif
+#ifdef USER_CAN3
+    Dwt_Delay_Ms(2);
+    if (HAL_FDCAN_ActivateNotification(&hfdcan3,FDCAN_IT_RX_FIFO0_NEW_MESSAGE,0) != HAL_OK)
+    {
+        return false;
+    }
+#endif
     return true;
 }
 
@@ -153,19 +202,33 @@ static bool Can_Init(void)
     return true;
 }
 
-//     pTxHeader.DataLength = FDCAN_DLC_BYTES_64;
-//     pTxHeader.ErrorStateIndicator=FDCAN_ESI_ACTIVE;    // 传输节点 error active
-//     pTxHeader.BitRateSwitch=FDCAN_BRS_ON;              // FDCAN 帧发送 / 接收带波特率可变
-//     pTxHeader.FDFormat=FDCAN_FD_CAN;                   // 设置为 FDCAN 帧格式，兼容 CAN
-//     pTxHeader.TxEventFifoControl=FDCAN_NO_TX_EVENTS;   // 不存储 Tx events 事件
-//     pTxHeader.MessageMarker=0;
+// 声明总和变量
+// 统计所有 idx
+static uint8_t Update_Total_Idx(void) {
+    static uint8_t total_idx = 0;
+#ifdef USER_CAN1
+    total_idx += idx1;
+#endif
+#ifdef USER_CAN2
+    total_idx += idx2;
+#endif
+#ifdef USER_CAN3
+    total_idx += idx3;
+#endif
+    return total_idx;
+}
 
+/**
+ * @file bsp_fdcan.h
+ * @brief fdcan注册函数
+ * @param config
+ */
 CanInstance_s* Can_Register(const CanInitConfig_s* config){
     if (config == NULL || config->can_handle == NULL){
-        Log_Error("Can Register Error");
+        Log_Error("%s CanInitConfig Is Null",config->topic_name);
         return NULL; // 参数检查
     }
-    if (!(idx1)){
+    if (!Update_Total_Idx()){
         if (Can_Init()){
             Log_Passing("Can Init Success");
         }else{
@@ -174,17 +237,18 @@ CanInstance_s* Can_Register(const CanInitConfig_s* config){
     }
     CanInstance_s *instance = user_malloc(sizeof(CanInstance_s)); // 分配空间
     if (instance == NULL){
-        Log_Error("Can Instance Malloc Failed");
+        Log_Error("%s CanInstance Malloc Failed",config->topic_name);
         return NULL; // 内存分配失败
     }
     memset(instance, 0, sizeof(CanInstance_s));
+    instance->topic_name = config->topic_name;
     instance->tx_conf.Identifier = config->tx_id;
     instance->tx_conf.IdType = config->can_handle->Init.FrameFormat;
     instance->tx_conf.TxFrameType = FDCAN_DATA_FRAME;
     instance->tx_conf.DataLength = FDCAN_DLC_BYTES_8;
-    instance->tx_conf.ErrorStateIndicator = FDCAN_ESI_ACTIVE;// 传输节点 error active
-    instance->tx_conf.BitRateSwitch = FDCAN_BRS_OFF;       // FDCAN 帧发送 / 接收不带波特率可变
-    instance->tx_conf.FDFormat = FDCAN_CLASSIC_CAN;        // 设置为经典 CAN 帧格式
+    instance->tx_conf.ErrorStateIndicator = FDCAN_ESI_ACTIVE;  // 传输节点 error active
+    instance->tx_conf.BitRateSwitch = FDCAN_BRS_OFF;           // FDCAN 帧发送 / 接收不带波特率可变
+    instance->tx_conf.FDFormat = FDCAN_CLASSIC_CAN;            // 设置为经典 CAN 帧格式
     instance->tx_conf.TxEventFifoControl = FDCAN_NO_TX_EVENTS; // 不存储 Tx events 事件
     instance->tx_conf.MessageMarker = 0;
 
@@ -196,6 +260,7 @@ CanInstance_s* Can_Register(const CanInitConfig_s* config){
     if (config->can_handle == &hfdcan1) {
         fdcan1_instance[idx1++] = instance;
     }
+    Log_Passing("%s Register Successfully",instance->topic_name);
     return instance;
 }
 
@@ -204,13 +269,12 @@ HAL_StatusTypeDef Can_Transmit(const CanInstance_s *instance)
     return HAL_FDCAN_AddMessageToTxFifoQ(instance->can_handle,&instance->tx_conf, instance->tx_buff);
 }
 
-void HAL_FDCAN_RxFifo0Callback( FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
-{
-    Log_Passing("success");
+void HAL_FDCAN_RxFifo0Callback( FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs){
 }
+
 void HAL_FDCAN_RxFifo1Callback( FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs) {
-    Log_Passing("success");
 }
+
 void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs)
 {
     if(ErrorStatusITs & FDCAN_IR_BO)
@@ -219,7 +283,5 @@ void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorSt
     }
     if(ErrorStatusITs & FDCAN_IR_EP)
     {
-        // MX_FDCAN1_Init();
-        // bsp_can_init();
     }
 }

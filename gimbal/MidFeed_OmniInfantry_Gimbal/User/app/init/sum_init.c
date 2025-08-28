@@ -81,7 +81,7 @@ void Sum_Init(void)
 static DbusInstance_s* Dbus_Init(void)
 {
     /* Initialize the DBUS */
-    DbusConfig_s *dbus_config = (DbusConfig_s *)user_malloc(sizeof(DbusConfig_s));
+    DbusConfig_s *dbus_config = user_malloc(sizeof(DbusConfig_s));
     if (dbus_config == NULL)
     {
         Log_Error("DBUS config allocation failed");
@@ -109,6 +109,7 @@ static DbusInstance_s* Dbus_Init(void)
 
 CanInstance_s *test;
 CanInitConfig_s test_config = {
+    .topic_name = "test",
     .can_handle = &hfdcan1,
     .tx_id = 0x200,
     .rx_id = 0x1FF,

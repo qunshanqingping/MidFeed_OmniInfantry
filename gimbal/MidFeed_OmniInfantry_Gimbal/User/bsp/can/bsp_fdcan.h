@@ -8,15 +8,16 @@
 #include <stdint.h>
 #include "fdcan.h"
 
-#define FDCAN_MAX_REGISTER_CNT 8   // 一条 FDCAN 总线最多支持 8 个模块, 即 8 个 FDCANInstance 实例
+#define FDCAN_MAX_REGISTER_CNT 16
 #define USER_CAN_CNT ((defined(USER_CAN1) ? 1 : 0) + \
                       (defined(USER_CAN2) ? 1 : 0) + \
                       (defined(USER_CAN3) ? 1 : 0))
-#define MX_FDCAN_FILTER_CNT (USER_CAN_CNT *14) // FDCAN 每个 CAN 有 14 个过滤器, 每个过滤器可以配置 3 个 ID, 所以总共可以配置 42 个 ID
+#define MX_FDCAN_FILTER_CNT (USER_CAN_CNT *14)
 
 #pragma pack(1)
 typedef struct _CanInstance_s
 {
+    char* topic_name;
     FDCAN_HandleTypeDef *can_handle;                      // FDCAN 句柄
     FDCAN_TxHeaderTypeDef tx_conf;                        // FDCAN 报文发送配置
     uint16_t tx_id;                                       // 发送 id, 即发送的 FDCAN 报文 id
@@ -30,6 +31,7 @@ typedef struct _CanInstance_s
 
 typedef struct
 {
+    char* topic_name;
     FDCAN_HandleTypeDef *can_handle;
     uint16_t tx_id;
     uint16_t rx_id;

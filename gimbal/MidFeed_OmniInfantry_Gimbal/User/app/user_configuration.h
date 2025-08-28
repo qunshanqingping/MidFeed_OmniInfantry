@@ -31,6 +31,12 @@
 #error "USER_CAN_STANDARD 不支持CAN3！"
 #endif
 
+#if defined(USER_CAN_STANDARD) && !defined(USER_CAN1) && !defined(USER_CAN2)
+#error "USER_CAN_STANDARD 至少需要定义一个 CAN 总线！"
+#endif
+#if defined(USER_CAN_FD) && !defined(USER_CAN1) && !defined(USER_CAN2) && !defined(USER_CAN3)
+#error "USER_CAN_FD 至少需要定义一个 CAN 总线！"
+#endif
 /* 底盘初始化配置选项 */
 // 选择底盘类型
 #define USER_OMNI // 全向轮底盘
