@@ -3,32 +3,42 @@
  *@brief 初始化配置文件
  *@version 1.0
  *@date 2025-08-27
- *@note 该文件用于存放用户的配置选项，如宏定义、常量；避免对bsp层文件的直接修改
+ *@note 该文件用于存放用户的配置选项，如宏定义、常量；避免对 bsp 层文件的直接修改
  *@author Adonis_Jin
  */
 
 #ifndef USER_CONFIGURATION_H
 #define USER_CONFIGURATION_H
 
-/* CAN初始化配置选项 */
+/* CAN 初始化配置选项 */
 
-//选择CAN类型
+// 选择 CAN 类型
 #define USER_CAN_FD
 // #define USER_CAN_STANDARD
 
 
-//选择CAN总线
+// 选择 CAN 总线
 #define USER_CAN1
 #define USER_CAN2
 #define USER_CAN3
 
-//检查是否出现定义冲突,只允许一个CAN类型定义存在,否则编译会自动报错
+// 检查是否出现定义冲突, 只允许一个 CAN 类型定义存在, 否则编译会自动报错
 #if defined(USER_CAN_FD) && defined(USER_CAN_STANDARD)
 #error "USER_CAN_FD 和 USER_CAN_STANDARD 不能同时定义！"
 #endif
-//检查是否出现定义冲突,标准can只支持CAN1和CAN2
+// 检查是否出现定义冲突, 标准 can 只支持 CAN1 和 CAN2
 #if defined(USER_CAN_STANDARD) &&defined(USER_CAN3)
 #error "USER_CAN_STANDARD 不支持CAN3！"
 #endif
 
+/* 底盘初始化配置选项 */
+// 选择底盘类型
+#define USER_OMNI // 全向轮底盘
+// #define USER_MECANUM // 麦克纳姆底盘
+// #define USER_SWERVE // 舵轮底盘
+
+// 检查是否出现定义冲突, 只允许一个底盘类型定义存在, 否则编译会自动报错
+#if (defined(USER_OMNI) && defined(USER_MECANUM))||(defined(USER_OMNI) && defined(USER_SWERVE))||(defined(USER_MECANUM) && defined(USER_SWERVE))
+#error "USER_OMNI, USER_MECANUM 和 USER_SWERVE 只能定义一个！"
+#endif
 #endif //USER_CONFIGURATION_H

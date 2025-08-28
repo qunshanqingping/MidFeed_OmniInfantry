@@ -128,15 +128,15 @@ static void test_can(void)
         Log_Passing("CAN Register Success");
     }
 }
-
+HAL_StatusTypeDef test_status;
 void CAN_Task(void const * argument)
 {
     /* USER CODE BEGIN CAN_Task */
     /* Infinite loop */
     for(;;)
     {
-        Can_Transmit(test);
-        osDelay(200);
+        test_status = Can_Transmit(test);
+        osDelay(2000);
     }
     /* USER CODE END CAN_Task */
 }
