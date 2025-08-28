@@ -29,14 +29,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="71df02b0-c9a0-41c0-8136-c1d22fce8aa7" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User/app/init/sum_init.c" beforeDir="false" afterPath="$PROJECT_DIR$/User/app/init/sum_init.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User/app/user_configuration.h" beforeDir="false" afterPath="$PROJECT_DIR$/User/app/user_configuration.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User/bsp/can/bsp_fdcan.c" beforeDir="false" afterPath="$PROJECT_DIR$/User/bsp/can/bsp_fdcan.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User/bsp/can/bsp_fdcan.h" beforeDir="false" afterPath="$PROJECT_DIR$/User/bsp/can/bsp_fdcan.h" afterDir="false" />
-    </list>
+    <list default="true" id="71df02b0-c9a0-41c0-8136-c1d22fce8aa7" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -161,7 +154,7 @@
       <workItem from="1756201950465" duration="816000" />
       <workItem from="1756269741496" duration="1212000" />
       <workItem from="1756359487350" duration="5621000" />
-      <workItem from="1756370934176" duration="7806000" />
+      <workItem from="1756370934176" duration="11498000" />
     </task>
     <servers />
   </component>
