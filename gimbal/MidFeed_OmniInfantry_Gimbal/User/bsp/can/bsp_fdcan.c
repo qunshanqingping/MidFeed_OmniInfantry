@@ -26,7 +26,7 @@ static CanInstance_s *fdcan3_instance[FDCAN_MAX_REGISTER_CNT]; // CAN3
 static uint32_t USER_FDCAN3_FIFO_NUMBER;
 #endif
 
-
+/* 私有函数 ---------------------------------------------------------------------*/
 /**
  * @file bsp_fdcan.c
  * @brief CAN 过滤器初始化函数
@@ -157,11 +157,9 @@ static bool Can_Filter_Init(void) {
  * @brief CAN 使能函数
  * @return true-- 初始化成功   false-- 初始化失败
  * @date 2025-08-27
- * @todo 还要修
+ * @note 目前只能选择一种中断方式
+ * @todo 可以选择多种中断方式
  */
-
-uint8_t cnt_test = 0;
-
 static void Can_Service_Init(void) {
 #ifdef USER_CAN1
     while (HAL_FDCAN_Start(&hfdcan1) != HAL_OK) {
@@ -212,7 +210,13 @@ static void Can_Service_Init(void) {
     }
 #endif
 }
-
+/**
+ * @file bsp_fdcan.c
+ * @brief CAN 滤波器初始化函数
+ * @date 2025-08-27
+ * @note 目前只能选择一种滤波器模式--掩码，且不能过滤ID
+ * @todo 可以选择多种滤波器模式
+ */
 static void Can_Init(void) {
     if (Can_Filter_Init()) {
         Can_Service_Init();
@@ -237,10 +241,13 @@ static uint8_t Update_Total_Idx(void) {
     return total_idx;
 }
 
+/* 公共函数 ------------------------------------------------------------------*/
+
 /**
- * @file bsp_fdcan.h
- * @brief fdcan 注册函数
- * @param config
+ * @file bsp_fdcan.c
+ * @brief fdcan注册函数
+ * @param config CAN 初始化配置结构体
+ * @return 注册的 CAN 实例指针
  */
 CanInstance_s *Can_Register(const CanInitConfig_s *config) {
     if (config == NULL || config->can_handle == NULL) {
@@ -278,10 +285,39 @@ CanInstance_s *Can_Register(const CanInitConfig_s *config) {
     Log_Passing("%s Register Successfully", instance->topic_name);
     return instance;
 }
-
-HAL_StatusTypeDef Can_Transmit(const CanInstance_s *instance) {
-    return HAL_FDCAN_AddMessageToTxFifoQ(instance->can_handle, &instance->tx_conf, instance->tx_buff);
+/**
+ * @file bsp_fdcan.c
+ * @brief FDCAN 发送函数
+ * @param instance FDCAN 实例
+ * @param tx_buff 发送缓冲区
+ * @param time_out 超时时间
+ * @return true-- 发送成功   false-- 发送失败
+ */
+bool Can_Transmit(const CanInstance_s *instance, const uint8_t *tx_buff, const float time_out) {
+    static uint8_t busy_count;
+    static volatile float wait_time;
+    const float dwt_start = Dwt_Get_Time_Line_Ms();
+    while (HAL_FDCAN_GetTxFifoFreeLevel(instance->can_handle) == 0) {
+        if (Dwt_Get_Time_Line_Ms() - dwt_start > time_out) {
+            Log_Warning("%s fdcan transition is time out", instance->topic_name);
+            return false;
+        }
+        busy_count++;
+        Log_Warning("%s fdcan transition bus busy cnt is %d", instance->topic_name, busy_count);
+    }
+    //测试上一段代码耗时
+    wait_time = Dwt_Get_Time_Line_Ms() - dwt_start;
+    if (wait_time > 0.01) {
+        Log_Warning("%s fdcan transition wait time is %f ms", instance->topic_name, wait_time);
+    }
+    if (HAL_FDCAN_AddMessageToTxFifoQ(instance->can_handle, &instance->tx_conf, tx_buff) == HAL_OK) {
+        return true;
+    }
+    busy_count++;
+    Log_Warning("%s fdcan transition is busy %d", instance->topic_name, busy_count);
+    return false;
 }
+
 
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
 }

@@ -39,6 +39,6 @@ typedef struct
     void *parent_pointer;
 }CanInitConfig_s;
 CanInstance_s* Can_Register(const CanInitConfig_s* config);
-HAL_StatusTypeDef Can_Transmit(const CanInstance_s *instance);
+bool Can_Transmit(const CanInstance_s*  instance,uint8_t* tx_buff,uint8_t time_out);
 #endif
 #endif

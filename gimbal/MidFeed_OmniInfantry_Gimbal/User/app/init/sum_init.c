@@ -136,7 +136,7 @@ void CAN_Task(void const * argument)
     /* Infinite loop */
     for(;;)
     {
-        test_status = Can_Transmit(test);
+        // test_status = Can_Transmit(test);
         osDelay(2000);
     }
     /* USER CODE END CAN_Task */
