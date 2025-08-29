@@ -28,6 +28,14 @@ bool User_Debug_handle(void);
 #define USER_CAN2
 #define USER_CAN3
 
+//选择 can fifo  0 or 1
+#define USER_CAN1_FIFO_0
+#define USER_CAN2_FIFO_0
+#define USER_CAN3_FIFO_0
+// #define USER_CAN1_FIFO_1
+// #define USER_CAN2_FIFO_1
+// #define USER_CAN3_FIFO_1
+
 // 检查是否出现定义冲突, 只允许一个 CAN 类型定义存在, 否则编译会自动报错
 #if defined(USER_CAN_FD) && defined(USER_CAN_STANDARD)
 #error "USER_CAN_FD 和 USER_CAN_STANDARD 不能同时定义！"

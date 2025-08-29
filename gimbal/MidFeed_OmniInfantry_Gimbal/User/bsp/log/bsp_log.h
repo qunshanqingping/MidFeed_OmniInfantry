@@ -65,7 +65,7 @@
  * @brief 信号输出 蓝色
  * @param format 输出内容
  */
-#define Log_Debuger(format, ...) LOG_PROTO("D:", RTT_CTRL_TEXT_BRIGHT_BLUE, format, ##__VA_ARGS__)
+#define Log_Debug(format, ...) LOG_PROTO("D:", RTT_CTRL_TEXT_BRIGHT_BLUE, format, ##__VA_ARGS__)
 /**
  * @brief 警告输出 黄色
  * @param format 输出内容
@@ -87,4 +87,15 @@
  * @brief 日志系统初始化，这里为了统一bsp层，重新封装
  */
 void Log_Init();
+
+inline void PrintS_BWithLogError() {
+    // 使用Log_Error和0输出"S_B"字符画
+    Log_Error(" 000000   000000 ");
+    Log_Error("00        00   00 ");
+    Log_Error("00        00   00 ");
+    Log_Error(" 000000   000000 ");
+    Log_Error("      00  00   00");
+    Log_Error("      00  00   00");
+    Log_Error(" 000000   000000 ");
+}
 #endif /* BSP_LOG_H */

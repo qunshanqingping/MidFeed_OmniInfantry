@@ -319,18 +319,84 @@ bool Can_Transmit(const CanInstance_s *instance, const uint8_t *tx_buff, const f
 }
 
 
+// HAL_CAN_GetRxMessage(_hcan, fifox, &rxconf, can_rx_buff); // 从FIFO中获取数据
+// for (size_t i = 0; i < idx; ++i)
+// { // 两者相等说明这是要找的实例
+//     if (_hcan == can_instance[i]->can_handle && rxconf.StdId == can_instance[i]->rx_id)
+//     {
+//         if (can_instance[i]->can_module_callback != NULL) // 回调函数不为空就调用
+//         {
+//             can_instance[i]->rx_len = rxconf.DLC;                      // 保存接收到的数据长度
+//             memcpy(can_instance[i]->rx_buff, can_rx_buff, rxconf.DLC); // 消息拷贝到对应实例
+//             can_instance[i]->can_module_callback(can_instance[i]);     // 触发回调进行数据解析和处理
+//         }
+//         return;
+//     }
+// }
+static void FDCAN_RxFifoCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifoITs, uint8_t idx, CanInstance_s *fdcan_instance) {
+    FDCAN_RxHeaderTypeDef rxconf;
+    uint8_t rx_buff[8];
+    while (HAL_FDCAN_GetRxFifoFillLevel(hfdcan, RxFifoITs)) {
+        if (HAL_FDCAN_GetRxMessage(hfdcan, RxFifoITs, &rxconf, rx_buff)) {
+            if (idx == 0)
+                return;
+            for (uint8_t i = 0; i < idx; i++) {
+                if (rxconf.Identifier == fdcan_instance[i].rx_id) {
+                    if (fdcan_instance[i].can_module_callback != NULL)
+                        fdcan_instance[i].rx_len = rxconf.DataLength;
+                    memcpy(fdcan_instance[i].rx_buff, rx_buff, rxconf.DataLength);
+                    fdcan_instance[i].can_module_callback(&fdcan_instance[i]);
+                }
+                break;
+            }
+        }
+    }
+}
+
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
+    if (RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) {
+#ifdef USER_CAN1_FIFO_0
+        if (hfdcan == &hfdcan1){
+        FDCAN_RxFifoCallback(hfdcan,RxFifo0ITs,idx1,fdcan1_instance);
+            }
+#endif
+#ifdef USER_CAN2_FIFO_0
+        if (hfdcan == &hfdcan2){
+            FDCAN_RxFifoCallback(hfdcan,RxFifo0ITs,idx2,fdcan2_instance);
+        }
+#endif
+#ifdef USER_CAN3_FIFO_0
+        if (hfdcan == &hfdcan3){
+            FDCAN_RxFifoCallback(hfdcan,RxFifo0ITs,idx3,fdcan3_instance);
+        }
+#endif
+    }
 }
 
 void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs) {
+    if (RxFifo1ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) {
+#ifdef USER_CAN1_FIFO_1
+        if (hfdcan == &hfdcan1){
+            FDCAN_RxFifoCallback(hfdcan,RxFifo1ITs,idx1,fdcan1_instance);
+        }
+#endif
+#ifdef USER_CAN2_FIFO_1
+        if (hfdcan == &hfdcan2){
+            FDCAN_RxFifoCallback(hfdcan,RxFifo1ITs,idx2,fdcan2_instance);
+        }
+#endif
+#ifdef USER_CAN3_FIFO_1
+        if (hfdcan == &hfdcan3){
+            FDCAN_RxFifoCallback(hfdcan,RxFifo1ITs,idx3,fdcan3_instance);
+        }
+#endif
+    }
 }
 
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 // ReSharper disable once CppParameterMayBeConst
-void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs) {
+void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
     if (ErrorStatusITs & FDCAN_IR_BO) {
         CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
-    }
-    if (ErrorStatusITs & FDCAN_IR_EP) {
     }
 }
