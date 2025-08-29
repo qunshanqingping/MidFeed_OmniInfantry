@@ -31,14 +31,14 @@ typedef struct _CanInstance_s
 
 typedef struct
 {
-    char* topic_name;
-    FDCAN_HandleTypeDef *can_handle;
-    uint16_t tx_id;
-    uint16_t rx_id;
-    void (*can_module_callback)(struct _CanInstance_s *);
-    void *parent_pointer;
+    char* topic_name;                  //实例名称
+    FDCAN_HandleTypeDef *can_handle;   //fdcan端口号
+    uint16_t tx_id;                    //发送id
+    uint16_t rx_id;                    //接收id
+    void (*can_module_callback)(struct _CanInstance_s *);   //接收的回调函数, 用于解析接收到的数据
+    void *parent_pointer;                                   //使用 can 外设的父指针 (即 id 指向的模块拥有此 can 实例, 是父子关系)
 }CanInitConfig_s;
 CanInstance_s* Can_Register(const CanInitConfig_s* config);
-bool Can_Transmit(const CanInstance_s*  instance,uint8_t* tx_buff,uint8_t time_out);
+bool Can_Transmit(const CanInstance_s *instance, const uint8_t *tx_buff, const float time_out);
 #endif
 #endif

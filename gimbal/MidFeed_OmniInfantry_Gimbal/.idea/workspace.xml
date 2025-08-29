@@ -6,6 +6,7 @@
   <component name="BackendCodeEditorMiscSettings">
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/LiveTemplatesHousekeeping/HotspotSessionHintIsShown/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppFormatterOtherPage" type="string" />
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
   </component>
@@ -31,9 +32,9 @@
   <component name="ChangeListManager">
     <list default="true" id="71df02b0-c9a0-41c0-8136-c1d22fce8aa7" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User/app/user_configuration.h" beforeDir="false" afterPath="$PROJECT_DIR$/User/app/user_configuration.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/User/bsp/can/bsp_fdcan.c" beforeDir="false" afterPath="$PROJECT_DIR$/User/bsp/can/bsp_fdcan.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User/bsp/log/bsp_log.h" beforeDir="false" afterPath="$PROJECT_DIR$/User/bsp/log/bsp_log.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/User/bsp/can/bsp_fdcan.h" beforeDir="false" afterPath="$PROJECT_DIR$/User/bsp/can/bsp_fdcan.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/User/bsp/can/readme" beforeDir="false" afterPath="$PROJECT_DIR$/User/bsp/can/readme" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +61,11 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///AIAssistantSnippet.." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet.." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet.." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet.." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet.." root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///AIAssistantSnippet.." root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../../ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/arm-none-eabi/include/string.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h" root0="SKIP_HIGHLIGHTING" />
@@ -105,7 +111,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "ml.llm.AIAssistantPromptsLibrary",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -117,6 +123,11 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake 应用程序.MidFeed_OmniInfantry_Gimbal.elf">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="MidFeed_OmniInfantry_Gimbal.elf" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="MidFeed_OmniInfantry_Gimbal" TARGET_NAME="MidFeed_OmniInfantry_Gimbal.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="MidFeed_OmniInfantry_Gimbal" RUN_TARGET_NAME="MidFeed_OmniInfantry_Gimbal.elf">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -164,6 +175,9 @@
       <workItem from="1756392569500" duration="1689000" />
       <workItem from="1756394288855" duration="3569000" />
       <workItem from="1756440160720" duration="8088000" />
+      <workItem from="1756484576842" duration="101000" />
+      <workItem from="1756484706358" duration="337000" />
+      <workItem from="1756485054803" duration="2402000" />
     </task>
     <servers />
   </component>

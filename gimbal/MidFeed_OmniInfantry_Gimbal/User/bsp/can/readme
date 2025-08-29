@@ -1,0 +1,36 @@
+# bsp_fdcan
+
+## 如何注册
+
+### 1.配置 CanInitConfig
+
+~~~c
+//CanInitConfig_s结构体如下
+typedef struct
+{
+    char* topic_name;                                       //实例名称
+    FDCAN_HandleTypeDef *can_handle;                        //fdcan端口号
+    uint16_t tx_id;                                         //发送id
+    uint16_t rx_id;                                         //接收id
+    void (*can_module_callback)(struct _CanInstance_s *);   //接收的回调函数, 用于解析接收到的数据
+    void *parent_pointer;                                   //使用 can 外设的父指针 (即 id 指向的模块拥有此 can 实例, 是父子关系)
+}CanInitConfig_s;
+~~~
+### 2.声明CanInstance指针
+### 3.调用Can_Register()
+
+### 示例
+~~~c++
+CanInstance_s *test;
+CanInitConfig_s test_config = {
+    .topic_name = "test",
+    .can_handle = &hfdcan1,
+    .tx_id = 0x200,
+    .rx_id = 0x1FF,
+    .can_module_callback = NULL,
+    .parent_pointer = NULL
+};
+test = Can_Register(&test_config);
+~~~
+
+## 如何发送

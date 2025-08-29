@@ -28,11 +28,11 @@ static uint32_t USER_FDCAN3_FIFO_NUMBER;
 
 /* 私有函数 ---------------------------------------------------------------------*/
 /**
- * @file bsp_fdcan.c
- * @brief CAN 过滤器初始化函数
- * @return true-- 初始化成功   false-- 初始化失败
- * @date 2025-08-27
- * @todo 目前是全接收, 后续添加过滤功能; 判断 HAL 库函数的返回值
+ * @brief 初始化FDCAN过滤器配置。
+ *
+ * 该函数根据用户定义的宏（USER_CAN1, USER_CAN2, USER_CAN3）初始化相应的FDCAN实例的过滤器。对于每个启用的FDCAN实例，它首先确定ID类型（标准或扩展），然后选择接收FIFO（FIFO0或FIFO1）。如果两个FIFO都没有元素，则记录错误并返回false。接着，配置过滤器参数，包括ID类型、过滤器索引、过滤器类型和过滤器配置。此外，还配置了全局过滤器以拒绝不匹配的标准ID和扩展ID以及远程帧，并设置了FIFO水印中断。如果在配置过程中出现任何错误，将记录错误日志并重试直到成功。
+ * 注意：此函数依赖于HAL库提供的FDCAN相关API。
+ * @return 如果所有FDCAN实例的过滤器配置成功，返回true；否则返回false。
  */
 static bool Can_Filter_Init(void) {
     // FDCAN1 过滤器配置
@@ -153,12 +153,11 @@ static bool Can_Filter_Init(void) {
 
 
 /**
- * @file bsp_fdcan.c
- * @brief CAN 使能函数
- * @return true-- 初始化成功   false-- 初始化失败
- * @date 2025-08-27
- * @note 目前只能选择一种中断方式
- * @todo 可以选择多种中断方式
+ * @brief 初始化CAN服务。
+ *
+ * 该函数根据用户配置的宏定义（USER_CAN1, USER_CAN2, USER_CAN3）来初始化相应的FDCAN硬件实例。对于每个启用的FDCAN实例，首先尝试启动它。如果启动失败，则记录错误日志并继续重试直到成功。随后，根据RxFifo0ElmtsNbr的值选择激活Rx FIFO 0或Rx FIFO 1的消息接收中断通知。如果激活中断通知失败，同样会记录错误日志，并且持续尝试直到成功为止。
+ * 注意：此函数依赖于HAL库提供的FDCAN相关API。
+ * @return 无返回值（void）。
  */
 static void Can_Service_Init(void) {
 #ifdef USER_CAN1
@@ -210,23 +209,30 @@ static void Can_Service_Init(void) {
     }
 #endif
 }
+
 /**
- * @file bsp_fdcan.c
- * @brief CAN 滤波器初始化函数
- * @date 2025-08-27
- * @note 目前只能选择一种滤波器模式--掩码，且不能过滤ID
- * @todo 可以选择多种滤波器模式
+ * @brief 初始化CAN模块。
+ *
+ * 该函数首先尝试初始化CAN过滤器，如果成功，则继续初始化CAN服务，并记录一条通过日志。如果CAN过滤器初始化失败，则直接记录一条错误日志。
+ * 注意：无论初始化是否成功，都会打印一条关于CAN初始化的日志信息，
+ * @return 无返回值（void）。
  */
 static void Can_Init(void) {
     if (Can_Filter_Init()) {
         Can_Service_Init();
         Log_Passing("Can Init successfully");;
+    }else {
+        Log_Error("Can Init failed");
     }
-    Log_Error("Can Init successfully");
 }
 
-// 声明总和变量
-// 统计所有 idx
+/**
+ * @brief 更新并返回累计索引值。
+ *
+ * 该函数根据预处理器宏`USER_CAN1`, `USER_CAN2`, 和 `USER_CAN3`是否定义，来决定是否累加对应的索引值`idx1`, `idx2`, 和 `idx3`到静态变量`total_idx`上。每次调用此函数时都会更新`total_idx`的值，并返回更新后的值。
+ *
+ * @return 返回更新后的累计索引值。
+ */
 static uint8_t Update_Total_Idx(void) {
     static uint8_t total_idx = 0;
 #ifdef USER_CAN1
@@ -244,10 +250,13 @@ static uint8_t Update_Total_Idx(void) {
 /* 公共函数 ------------------------------------------------------------------*/
 
 /**
- * @file bsp_fdcan.c
- * @brief fdcan注册函数
- * @param config CAN 初始化配置结构体
- * @return 注册的 CAN 实例指针
+ * @brief 注册一个新的CAN实例。
+ *
+ * 根据提供的配置信息创建并初始化一个新的CAN实例。如果配置信息为空或内存分配失败，则函数将返回NULL。成功注册后，新的CAN实例将被添加到相应的FDCAN实例列表中，并返回指向新实例的指针。
+ *
+ * @param config 指向包含CAN初始化配置信息（如句柄、发送ID等）的CanInitConfig_s结构的指针。
+ *
+ * @return 如果成功注册则返回指向新创建的CanInstance_s结构的指针；如果配置无效或内存分配失败则返回NULL。
  */
 CanInstance_s *Can_Register(const CanInitConfig_s *config) {
     if (config == NULL || config->can_handle == NULL) {
@@ -285,13 +294,17 @@ CanInstance_s *Can_Register(const CanInitConfig_s *config) {
     Log_Passing("%s Register Successfully", instance->topic_name);
     return instance;
 }
+
 /**
- * @file bsp_fdcan.c
- * @brief FDCAN 发送函数
- * @param instance FDCAN 实例
- * @param tx_buff 发送缓冲区
- * @param time_out 超时时间
- * @return true-- 发送成功   false-- 发送失败
+ * @brief 通过指定的CAN实例发送消息。
+ *
+ * 此函数尝试将提供的数据缓冲区中的消息添加到指定FDCAN实例的传输FIFO中。如果传输FIFO没有空闲空间，函数将等待直到有空闲空间可用或超时。如果在指定时间内未能成功添加消息，则返回false。
+ *
+ * @param instance 指向包含CAN配置信息（如句柄、发送配置等）的CanInstance_s结构的指针。
+ * @param tx_buff 指向要发送的数据缓冲区的指针。
+ * @param time_out 等待传输FIFO空闲的最大时间（以毫秒为单位）。
+ *
+ * @return 如果消息成功添加到传输FIFO则返回true；如果超时或添加失败则返回false。
  */
 bool Can_Transmit(const CanInstance_s *instance, const uint8_t *tx_buff, const float time_out) {
     static uint8_t busy_count;
@@ -318,22 +331,17 @@ bool Can_Transmit(const CanInstance_s *instance, const uint8_t *tx_buff, const f
     return false;
 }
 
-
-// HAL_CAN_GetRxMessage(_hcan, fifox, &rxconf, can_rx_buff); // 从FIFO中获取数据
-// for (size_t i = 0; i < idx; ++i)
-// { // 两者相等说明这是要找的实例
-//     if (_hcan == can_instance[i]->can_handle && rxconf.StdId == can_instance[i]->rx_id)
-//     {
-//         if (can_instance[i]->can_module_callback != NULL) // 回调函数不为空就调用
-//         {
-//             can_instance[i]->rx_len = rxconf.DLC;                      // 保存接收到的数据长度
-//             memcpy(can_instance[i]->rx_buff, can_rx_buff, rxconf.DLC); // 消息拷贝到对应实例
-//             can_instance[i]->can_module_callback(can_instance[i]);     // 触发回调进行数据解析和处理
-//         }
-//         return;
-//     }
-// }
-static void FDCAN_RxFifoCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifoITs, uint8_t idx, CanInstance_s *fdcan_instance) {
+/**
+ * @brief FDCAN接收FIFO中断的回调函数。
+ *
+ * 该函数处理接收FIFO中的消息。它检索消息，并在消息标识符与已注册的CAN实例之一匹配时调用相应的回调函数。
+ *
+ * @param hfdcan 指向包含指定FDCAN配置信息的FDCAN_HandleTypeDef结构的指针。
+ * @param RxFifoITs 触发此回调的中断源。
+ * @param idx 表示fdcan_instance数组中CanInstance_s元素的数量的索引。
+ * @param fdcan_instance CanInstance_s结构数组，每个结构包含特定CAN实例的配置和回调。
+ */
+static void FDCAN_RxFifoCallback(FDCAN_HandleTypeDef *hfdcan, const uint32_t RxFifoITs, const uint8_t idx, CanInstance_s *fdcan_instance) {
     FDCAN_RxHeaderTypeDef rxconf;
     uint8_t rx_buff[8];
     while (HAL_FDCAN_GetRxFifoFillLevel(hfdcan, RxFifoITs)) {
@@ -353,26 +361,44 @@ static void FDCAN_RxFifoCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifoITs
     }
 }
 
+/**
+ * @brief FDCAN接收FIFO0中断的回调函数。
+ *
+ * 该函数处理接收FIFO0中的消息。当检测到新的消息时，它会根据配置调用相应的用户定义的回调函数。
+ *
+ * @param hfdcan 指向包含指定FDCAN配置信息的FDCAN_HandleTypeDef结构的指针。
+ * @param RxFifo0ITs 触发此回调的中断源。
+ */
+// ReSharper disable once CppParameterMayBeConst
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
     if (RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) {
 #ifdef USER_CAN1_FIFO_0
         if (hfdcan == &hfdcan1){
-        FDCAN_RxFifoCallback(hfdcan,RxFifo0ITs,idx1,fdcan1_instance);
+        FDCAN_RxFifoCallback(hfdcan,RxFifo0ITs,idx1,*fdcan1_instance);
             }
 #endif
 #ifdef USER_CAN2_FIFO_0
         if (hfdcan == &hfdcan2){
-            FDCAN_RxFifoCallback(hfdcan,RxFifo0ITs,idx2,fdcan2_instance);
+            FDCAN_RxFifoCallback(hfdcan,RxFifo0ITs,idx2,*fdcan2_instance);
         }
 #endif
 #ifdef USER_CAN3_FIFO_0
         if (hfdcan == &hfdcan3){
-            FDCAN_RxFifoCallback(hfdcan,RxFifo0ITs,idx3,fdcan3_instance);
+            FDCAN_RxFifoCallback(hfdcan,RxFifo0ITs,idx3,*fdcan3_instance);
         }
 #endif
     }
 }
 
+/**
+ * @brief FDCAN接收FIFO1中断的回调函数。
+ *
+ * 该函数处理来自FDCAN接收FIFO1中的消息。当接收到新消息时，它会根据配置调用相应的用户定义回调函数。
+ *
+ * @param hfdcan 指向包含指定FDCAN配置信息的FDCAN_HandleTypeDef结构的指针。
+ * @param RxFifo1ITs 触发此回调的中断源。
+ */
+// ReSharper disable once CppParameterMayBeConst
 void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs) {
     if (RxFifo1ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) {
 #ifdef USER_CAN1_FIFO_1
@@ -393,6 +419,8 @@ void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs)
     }
 }
 
+//对HAL_FDCAN_ErrorStatusCallback的重载
+//@todo 待完善
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 // ReSharper disable once CppParameterMayBeConst
 void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
