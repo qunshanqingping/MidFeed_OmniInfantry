@@ -12,15 +12,12 @@
 
 #include "stdbool.h"
 /* 调试模式 */
-#define DEBUG_MODE
-
-bool User_Debug_handle(void);
 
 /* CAN 初始化配置选项 */
 
 // 选择 CAN 类型
-#define USER_CAN_FD
-// #define USER_CAN_STANDARD
+#define USER_CAN_FD //FDCAN
+// #define USER_CAN_STANDARD //CAN
 
 
 // 选择 CAN 总线
@@ -56,7 +53,7 @@ bool User_Debug_handle(void);
 #define USER_OMNI // 全向轮底盘
 // #define USER_MECANUM // 麦克纳姆底盘
 // #define USER_SWERVE // 舵轮底盘
-
+// #define USER_BALANCE // 平衡底盘
 // 检查是否出现定义冲突, 只允许一个底盘类型定义存在, 否则编译会自动报错
 #if (defined(USER_OMNI) && defined(USER_MECANUM))||(defined(USER_OMNI) && defined(USER_SWERVE))||(defined(USER_MECANUM) && defined(USER_SWERVE))
 #error "USER_OMNI, USER_MECANUM 和 USER_SWERVE 只能定义一个！"
