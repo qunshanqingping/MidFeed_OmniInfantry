@@ -106,15 +106,19 @@ static DbusInstance_s* Dbus_Init(void)
     user_free(dbus_config);
     return dbus_instance;
 }
-
+void test_decode(CanInstance_s *instance)
+{
+    Log_Passing("%x %x %x %x %x %x %x %x",
+        instance->rx_buff[0],instance->rx_buff[1],instance->rx_buff[2],instance->rx_buff[3],instance->rx_buff[4],instance->rx_buff[5],instance->rx_buff[6],instance->rx_buff[7]);
+}
 CanInstance_s *test;
 CanInitConfig_s test_config = {
     .topic_name = "test",
-    .can_handle = &hfdcan1,
+    .can_channel = 1,
     .tx_id = 0x200,
-    .rx_id = 0x1FF,
-    .can_module_callback = NULL,
-    .parent_pointer = NULL
+    .rx_id = 0x001,
+    .can_module_callback = test_decode,
+    .id = NULL
 };
 
 static void test_can(void)
@@ -129,13 +133,15 @@ static void test_can(void)
         Log_Passing("CAN Register Success");
     }
 }
-HAL_StatusTypeDef test_status;
+bool test_status;
+uint8_t tx_buf[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
 void CAN_Task(void const * argument)
 {
     /* USER CODE BEGIN CAN_Task */
     /* Infinite loop */
     for(;;)
     {
+        test_status = Can_Transmit(test, tx_buf);
         // test_status = Can_Transmit(test);
         osDelay(2000);
     }

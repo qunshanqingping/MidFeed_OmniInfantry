@@ -12,6 +12,7 @@
       <w>hspi</w>
       <w>huart</w>
       <w>logwarning</w>
+      <w>memcpy</w>
       <w>otfdec</w>
       <w>usart</w>
     </words>

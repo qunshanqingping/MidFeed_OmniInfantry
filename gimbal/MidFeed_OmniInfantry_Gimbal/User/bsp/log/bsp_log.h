@@ -19,7 +19,6 @@
 /* Private includes -----------------------------------------------------------*/
 #include "SEGGER_RTT.h"
 #include "SEGGER_RTT_Conf.h"
-#include "bsp_dwt.h"
 /* Private types -------------------------------------------------------------*/
 
 
@@ -88,7 +87,7 @@
  */
 void Log_Init();
 
-inline void PrintS_BWithLogError() {
+inline void PrintS_B_Error() {
     // 使用Log_Error和0输出"S_B"字符画
     Log_Error(" 000000   000000 ");
     Log_Error("00        00   00 ");
