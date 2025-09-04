@@ -1,10 +1,10 @@
-#include <string.h>
-#include <stdbool.h>
+#include "user_configuration.h"
 #include "bsp_fdcan.h"
 #include "FreeRTOS.h"
 #include "bsp_log.h"
 #include "basic_math.h"
-
+#include <string.h>
+#include <stdbool.h>
 #ifdef USER_CAN1
 // ReSharper disable once CppDeclaratorNeverUsed
 static uint8_t idx1;

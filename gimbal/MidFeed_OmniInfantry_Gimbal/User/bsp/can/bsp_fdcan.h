@@ -9,7 +9,6 @@
 #include "fdcan.h"
 
 #define FDCAN_MAX_REGISTER_CNT 16
-#define MX_FDCAN_FILTER_CNT (USER_CAN_CNT *14)
 
 #pragma pack(1)
 typedef struct _CanInstance_s
@@ -20,7 +19,7 @@ typedef struct _CanInstance_s
     uint16_t tx_id;                                       // 发送 id, 即发送的 FDCAN 报文 id
     uint8_t tx_buff[8];                                   // 发送缓存, 可以不用，但建议保留，方便调试
     uint16_t rx_id;                                       // 接收 id, 即接收的 FDCAN 报文 id
-    uint8_t rx_buff[8];                                   // 接收缓存, 目前保留，增加了一次 memcpy 操作
+    uint8_t rx_buff[8];                                   // 接收缓存, 目前保留，增加了一次 memcpy 操作，方便调试
     uint8_t rx_len;                                       // 接收长度, 可能为 0-8
     void (*can_module_callback)(struct _CanInstance_s *); // 接收的回调函数, 用于解析接收到的数据，如果增加了 uint8_t *rx_buff 成员，前面的rx_buff[8] 可以删去
     void *id;                                 // 使用 can 外设的模块指针 (即 id 指向的模块拥有此 can 实例, 是父子关系)

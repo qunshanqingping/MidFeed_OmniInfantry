@@ -18,7 +18,7 @@
 
 // 选择 CAN 类型
 #define USER_CAN_FD
-// #define USER_CAN_STANDARD
+#define USER_CAN_STANDARD
 
 // 选择 CAN 总线
 #define USER_CAN1
