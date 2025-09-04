@@ -1,8 +1,8 @@
 #pragma once
 #include "user_configuration.h"
-#ifdef USER_CAN_STANDARD
 #ifndef BSP_CAN_H
 #define BSP_CAN_H
+#ifdef USER_CAN_STANDARD
 #include <stdint.h>
 #include "can.h"
 /**
